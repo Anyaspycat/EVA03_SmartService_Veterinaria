@@ -1,4 +1,4 @@
-import sqlite3, os, haslib, base64, hmac
+import sqlite3, os, hashlib, base64, hmac
 
 DB_NAME = "sg_veterinaria.db"
 
@@ -53,6 +53,7 @@ def crear_tabla_mascotas():
             """
         )
         conn.commit() 
+        
 def crear_tabla_reservas():
     with conectar() as conn:
         c = conn.cursor()
@@ -73,4 +74,5 @@ def crear_tabla_reservas():
             """
         )
         conn.commit()
+
 
