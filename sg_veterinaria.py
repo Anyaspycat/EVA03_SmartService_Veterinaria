@@ -47,8 +47,7 @@ def crear_tabla_mascotas():
                 especie TEXT,
                 raza TEXT,
                 edad INTEGER,
-                idDueno INTEGER,
-                FOREIGN KEY (idDueno) REFERENCES usuarios(idUsuario)
+                idDueno INTEGER
             )
             """
         )
@@ -74,5 +73,6 @@ def crear_tabla_reservas():
             """
         )
         conn.commit()
+
 
 
