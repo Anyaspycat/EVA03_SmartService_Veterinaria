@@ -19,6 +19,7 @@ def registrar_nueva_mascota(nombre: str, especie: str, raza: str, edad: int, pes
         print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
+        
 def listar_mascotas() -> None:
     try:
         with conectar() as conn:
@@ -39,6 +40,7 @@ def listar_mascotas() -> None:
         print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
+        
 def eliminar_mascota(mascota_id: int) -> None:
     try:
         with conectar() as conn:
@@ -55,6 +57,7 @@ def eliminar_mascota(mascota_id: int) -> None:
         print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
+        
 def actualizar_mascota(mascota_id: int, nombre: Optional[str]= None, especie: Optional[str] = None, raza: Optional[str] = None, edad: Optional[int] = None, peso: Optional[float] = None, propietario_id: Optional[int] = None) -> None:
         with conectar() as conn:
             cursor = conn.cursor()
@@ -75,8 +78,8 @@ def actualizar_mascota(mascota_id: int, nombre: Optional[str]= None, especie: Op
             )
             conn.commit()
             print(f"\n Mascota con ID {mascota_id} actualizada correctamente.")
+            
 def buscar_mascotas_por_propietario(propietario_id: int) -> None:
- 
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas WHERE propietario_id = ?", (propietario_id,))
@@ -89,8 +92,8 @@ def buscar_mascotas_por_propietario(propietario_id: int) -> None:
             for mascota in mascotas:
                 print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}")
             print("-" * 80)
+            
 def buscar_mascotas_por_especie(especie: str) -> None: 
-
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas WHERE especie = ?", (especie,))
@@ -103,6 +106,7 @@ def buscar_mascotas_por_especie(especie: str) -> None:
             for mascota in mascotas:
                 print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
             print("-" * 80)            
+            
 def contar_mascotas() -> None:
     try:
         with conectar() as conn:
@@ -117,8 +121,7 @@ def contar_mascotas() -> None:
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
 
-#Crud Reserva
-def crear_reserva(): 
+def crear_reserva(idUsuario: int, idMascota: int, idVeterinario: int, fecha: str, hora: str, motivo: str, estadoMascota: str) -> None:
     try: 
         with conectar() as conn:
             c = conn.cursor()
@@ -131,7 +134,6 @@ def crear_reserva():
             )
             conn.commit()
             print("Reserva creada exitosamente.")
-
     except sqlite3.DatabaseError as e:
         print("Error de base de datos inesperado: ", e )
     except sqlite3.IntegrityError as e:
@@ -139,8 +141,7 @@ def crear_reserva():
     except Exception as e:
         print("Error inesperado: ", e)
 
-
-def mostrar_reservas():
+def mostrar_reservas() -> None:
     with conectar() as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -149,25 +150,41 @@ def mostrar_reservas():
         for fila in cursor.fetchall():
             print(f"ID Reserva: {fila[0]} , ID Usuario: {fila[1]}, ID Mascota: {fila[2]}, ID Veterinario: {fila[3]}, Fecha: {fila[4]}, Hora: {fila[5]}, Motivo: {fila[6]}, Estado Mascota: {fila[7]}")
 
-
-def modificar_reserva():
+def modificar_reserva(idReserva: int, idUsuario: Optional[int] = None, idMascota: Optional[int] = None, idVeterinario: Optional[int] = None, fecha: Optional[str] = None, hora: Optional[str] = None,
+    motivo: Optional[str] = None, estadoMascota: Optional[str] = None) -> None:
     try:
         with conectar() as conn:
             c = conn.cursor()
+            # Trae valores actuales
             c.execute(
-                """
-                UPDATE reservas
-                SET idUsuario = ?, idMascota = ?, idVeterinario = ?, fecha = ?, hora = ?, motivo = ?, estadoMascota = ?
-                WHERE idReserva = ?
-                """,
-                (idUsuario, idMascota, idVeterinario, fecha, hora, motivo, estadoMascota, idReserva)
+                """SELECT idUsuario, idMascota, idVeterinario, fecha, hora, motivo, estadoMascota
+                   FROM reservas WHERE idReserva = ?""",
+                (idReserva,)
+            )
+            r = c.fetchone()
+            if not r:
+                print(f"\n No se encontró la reserva con ID {idReserva}.")
+                return
+            # Mantén lo existente si viene None
+            nuevo_idUsuario     = idUsuario     if idUsuario     is not None else r[0]
+            nuevo_idMascota     = idMascota     if idMascota     is not None else r[1]
+            nuevo_idVeterinario = idVeterinario if idVeterinario is not None else r[2]
+            nueva_fecha         = fecha if fecha is not None else r[3]
+            nueva_hora          = hora  if hora  is not None else r[4]
+            nuevo_motivo        = motivo        if motivo        is not None else r[5]
+            nuevo_estado        = estadoMascota if estadoMascota is not None else r[6]
+            c.execute(
+                """UPDATE reservas
+                   SET idUsuario = ?, idMascota = ?, idVeterinario = ?, fecha = ?, hora = ?, motivo = ?, estadoMascota = ?
+                   WHERE idReserva = ?""",
+                (nuevo_idUsuario, nuevo_idMascota, nuevo_idVeterinario,
+                 nueva_fecha, nueva_hora, nuevo_motivo, nuevo_estado, idReserva)
             )
             conn.commit()
             if c.rowcount == 0:
-                print("No se encontró la reserva con el ID proporcionado.")
+                print("\n No se actualizó ninguna fila.")
             else:
-                print("Reserva modificada exitosamente.")
-
+                print("\n Reserva actualizada correctamente.")
     except sqlite3.DatabaseError as e:
         print("Error de base de datos inesperado: ", e )
     except sqlite3.IntegrityError as e:
@@ -175,8 +192,7 @@ def modificar_reserva():
     except Exception as e:
         print("Error inesperado: ", e)
 
-
-def eliminar_reserva():
+def eliminar_reserva(idReserva: int) -> None:
     try:
         with conectar() as conn:
             c = conn.cursor()
@@ -192,7 +208,6 @@ def eliminar_reserva():
                 print("No se encontró la reserva con el ID proporcionado.")
             else:
                 print("Reserva eliminada exitosamente.")
-
     except sqlite3.DatabaseError as e:
         print("Error de base de datos inesperado: ", e )
     except sqlite3.IntegrityError as e:
@@ -200,4 +215,133 @@ def eliminar_reserva():
     except Exception as e:
         print("Error inesperado: ", e)
 
+def registrar_nuevo_veterinario(nombre: str, especialidad: Optional[str] = None) -> None:
+    try:
+        with conectar() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO veterinarios (nombre, especialidad) VALUES (?, ?)",
+                (nombre, especialidad)
+            )
+            conn.commit()
+            print(f"\n Veterinario '{nombre}' agregado correctamente.")
+    except sqlite3.IntegrityError as e:
+        print("\n Error de integridad:", e)
+    except sqlite3.OperationalError as e:
+        print("\n Error operacional:", e)
+    except sqlite3.DatabaseError as e:
+        print("\n Error general de base de datos:", e)
 
+def listar_veterinarios() -> None:
+    try:
+        with conectar() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT idVeterinario, nombre, especialidad FROM veterinarios")
+            vets = cursor.fetchall()
+            if not vets:
+                print("\n No hay veterinarios registrados.")
+                return
+            print("\n Lista de Veterinarios:")
+            print("-" * 80)
+            for v in vets:
+                print(f"ID: {v[0]}, Nombre: {v[1]}, Especialidad: {v[2]}")
+            print("-" * 80)
+    except sqlite3.IntegrityError as e:
+        print("\n Error de integridad:", e)
+    except sqlite3.OperationalError as e:
+        print("\n Error operacional:", e)
+    except sqlite3.DatabaseError as e:
+        print("\n Error general de base de datos:", e)
+
+def eliminar_veterinario(veterinario_id: int) -> None:
+    try:
+        with conectar() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM veterinarios WHERE idVeterinario = ?", (veterinario_id,))
+            if cursor.rowcount == 0:
+                print(f"\n No se encontró veterinario con ID {veterinario_id}.")
+            else:
+                conn.commit()
+                print(f"\n Veterinario con ID {veterinario_id} eliminado correctamente.")
+    except sqlite3.IntegrityError as e:
+        print("\n Error de integridad:", e)
+    except sqlite3.OperationalError as e:
+        print("\n Error operacional:", e)
+    except sqlite3.DatabaseError as e:
+        print("\n Error general de base de datos:", e)
+
+def actualizar_veterinario(veterinario_id: int, nombre: Optional[str] = None, especialidad: Optional[str] = None) -> None:
+    try:
+        with conectar() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT idVeterinario, nombre, especialidad FROM veterinarios WHERE idVeterinario = ?",
+                (veterinario_id,)
+            )
+            v = cursor.fetchone()
+            if not v:
+                print(f"\n No se encontró veterinario con ID {veterinario_id}.")
+                return
+            nuevo_nombre = nombre if nombre is not None else v[1]
+            nueva_especialidad = especialidad if especialidad is not None else v[2]
+            cursor.execute(
+                "UPDATE veterinarios SET nombre = ?, especialidad = ? WHERE idVeterinario = ?",
+                (nuevo_nombre, nueva_especialidad, veterinario_id)
+            )
+            conn.commit()
+            print(f"\n Veterinario con ID {veterinario_id} actualizado correctamente.")
+    except sqlite3.IntegrityError as e:
+        print("\n Error de integridad:", e)
+    except sqlite3.OperationalError as e:
+        print("\n Error operacional:", e)
+    except sqlite3.DatabaseError as e:
+        print("\n Error general de base de datos:", e)
+
+def buscar_veterinarios_por_especialidad(especialidad: str) -> None:
+    with conectar() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT idVeterinario, nombre, especialidad FROM veterinarios WHERE especialidad = ?",
+            (especialidad,)
+        )
+        vets = cursor.fetchall()
+        if not vets:
+            print(f"\n No hay veterinarios con especialidad '{especialidad}'.")
+            return
+        print(f"\n Veterinarios con especialidad '{especialidad}':")
+        print("-" * 80)
+        for v in vets:
+            print(f"ID: {v[0]}, Nombre: {v[1]}")
+        print("-" * 80)
+
+def buscar_veterinarios_por_nombre(texto: str) -> None:
+    with conectar() as conn:
+        cursor = conn.cursor()
+        like = f"%{texto}%"
+        cursor.execute(
+            "SELECT idVeterinario, nombre, especialidad FROM veterinarios WHERE nombre LIKE ? ORDER BY nombre",
+            (like,)
+        )
+        vets = cursor.fetchall()
+        if not vets:
+            print(f"\n No hay veterinarios que coincidan con '{texto}'.")
+            return
+        print(f"\n Búsqueda por nombre contiene '{texto}':")
+        print("-" * 80)
+        for v in vets:
+            print(f"ID: {v[0]}, Nombre: {v[1]}, Especialidad: {v[2]}")
+        print("-" * 80)
+
+def contar_veterinarios() -> None:
+    try:
+        with conectar() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT COUNT(*) FROM veterinarios")
+            count = cursor.fetchone()[0]
+            print(f"\n Total de veterinarios registrados: {count}")
+    except sqlite3.IntegrityError as e:
+        print("\n Error de integridad:", e)
+    except sqlite3.OperationalError as e:
+        print("\n Error operacional:", e)
+    except sqlite3.DatabaseError as e:
+        print("\n Error general de base de datos:", e)
