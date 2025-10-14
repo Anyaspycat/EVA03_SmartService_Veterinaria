@@ -116,3 +116,88 @@ def contar_mascotas() -> None:
         print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
+
+#Crud Reserva
+def crear_reserva(): 
+    try: 
+        with conectar() as conn:
+            c = conn.cursor()
+            c.execute(
+                """
+                INSERT INTO reservas (idUsuario, idMascota, idVeterinario, fecha, hora, motivo, estadoMascota)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (idUsuario, idMascota, idVeterinario, fecha, hora, motivo, estadoMascota)
+            )
+            conn.commit()
+            print("Reserva creada exitosamente.")
+
+    except sqlite3.DatabaseError as e:
+        print("Error de base de datos inesperado: ", e )
+    except sqlite3.IntegrityError as e:
+        print("Error de Integridad de datos: ", e)
+    except Exception as e:
+        print("Error inesperado: ", e)
+
+
+def mostrar_reservas():
+    with conectar() as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT * FROM reservas"
+        )
+        for fila in cursor.fetchall():
+            print(f"ID Reserva: {fila[0]} , ID Usuario: {fila[1]}, ID Mascota: {fila[2]}, ID Veterinario: {fila[3]}, Fecha: {fila[4]}, Hora: {fila[5]}, Motivo: {fila[6]}, Estado Mascota: {fila[7]}")
+
+
+def modificar_reserva():
+    try:
+        with conectar() as conn:
+            c = conn.cursor()
+            c.execute(
+                """
+                UPDATE reservas
+                SET idUsuario = ?, idMascota = ?, idVeterinario = ?, fecha = ?, hora = ?, motivo = ?, estadoMascota = ?
+                WHERE idReserva = ?
+                """,
+                (idUsuario, idMascota, idVeterinario, fecha, hora, motivo, estadoMascota, idReserva)
+            )
+            conn.commit()
+            if c.rowcount == 0:
+                print("No se encontró la reserva con el ID proporcionado.")
+            else:
+                print("Reserva modificada exitosamente.")
+
+    except sqlite3.DatabaseError as e:
+        print("Error de base de datos inesperado: ", e )
+    except sqlite3.IntegrityError as e:
+        print("Error de Integridad de datos: ", e)
+    except Exception as e:
+        print("Error inesperado: ", e)
+
+
+def eliminar_reserva():
+    try:
+        with conectar() as conn:
+            c = conn.cursor()
+            c.execute(
+                """
+                DELETE FROM reservas
+                WHERE idReserva = ?
+                """,
+                (idReserva, )
+            )
+            conn.commit()
+            if c.rowcount == 0:
+                print("No se encontró la reserva con el ID proporcionado.")
+            else:
+                print("Reserva eliminada exitosamente.")
+
+    except sqlite3.DatabaseError as e:
+        print("Error de base de datos inesperado: ", e )
+    except sqlite3.IntegrityError as e:
+        print("Error de Integridad de datos: ", e)
+    except Exception as e:
+        print("Error inesperado: ", e)
+
+
