@@ -82,7 +82,7 @@ def actualizar_mascota(mascota_id: int, nombre: str = None, especie: str = None,
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
 def buscar_mascotas_por_propietario(propietario_id: int) -> None:
-    try:
+ 
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas WHERE propietario_id = ?", (propietario_id,))
@@ -95,14 +95,8 @@ def buscar_mascotas_por_propietario(propietario_id: int) -> None:
             for mascota in mascotas:
                 print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}")
             print("-" * 80)
-    except sqlite3.IntegrityError as e:
-        print(f"\n Error de integridad (posible duplicado o constraint):", e)
-    except sqlite3.OperationalError as e:
-        print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
-    except sqlite3.DatabaseError as e:
-        print(f"\n Error general de base de datos:", e)
 def buscar_mascotas_por_especie(especie: str) -> None: 
-    try:
+
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas WHERE especie = ?", (especie,))
@@ -114,16 +108,7 @@ def buscar_mascotas_por_especie(especie: str) -> None:
             print("-" * 80)
             for mascota in mascotas:
                 print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
-            print("-" * 80)
-    except sqlite3.IntegrityError as e:
-        print(f"\n Error de integridad (posible duplicado o constraint):", e)
-    except sqlite3.OperationalError as e:
-        print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
-    except sqlite3.DatabaseError as e:
-        print(f"\n Error general de base de datos:", e
-              
-              
-              
+            print("-" * 80)            
 def contar_mascotas() -> None:
     try:
         with conectar() as conn:
@@ -140,7 +125,7 @@ def contar_mascotas() -> None:
         
         
 def listar_mascotas_ordenadas_por_nombre() -> None:
-    try:
+
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas ORDER BY nombre ASC")
@@ -153,12 +138,6 @@ def listar_mascotas_ordenadas_por_nombre() -> None:
             for mascota in mascotas:
                 print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
             print("-" * 80)
-    except sqlite3.IntegrityError as e:
-        print(f"\n Error de integridad (posible duplicado o constraint):", e)
-    except sqlite3.OperationalError as e:
-        print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
-    except sqlite3.DatabaseError as e:
-        print(f"\n Error general de base de datos:", e)
         
 def listar_mascotas_ordenadas_por_edad() -> None:
     try:
@@ -182,7 +161,7 @@ def listar_mascotas_ordenadas_por_edad() -> None:
         print(f"\n Error general de base de datos:", e)
         
 def listar_mascotas_ordenadas_por_peso() -> None:
-    try:
+
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas ORDER BY peso ASC")
@@ -195,12 +174,7 @@ def listar_mascotas_ordenadas_por_peso() -> None:
             for mascota in mascotas:
                 print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
             print("-" * 80)
-    except sqlite3.IntegrityError as e:
-        print(f"\n Error de integridad (posible duplicado o constraint):", e)
-    except sqlite3.OperationalError as e:
-        print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
-    except sqlite3.DatabaseError as e:
-        print(f"\n Error general de base de datos:", e
+
 def editar_mascota_interactivo() -> None:
     try:
         mascota_id = int(input("\n Ingrese el ID de la mascota a editar: "))
