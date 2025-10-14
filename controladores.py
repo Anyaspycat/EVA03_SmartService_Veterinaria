@@ -1,6 +1,7 @@
 import sqlite3
 from sg_veterinaria import *
 from sg_hash import * 
+from typing import Optional
 
 def registrar_nueva_mascota(nombre: str, especie: str, raza: str, edad: int, peso: float, propietario_id: int) -> None:
     try:
@@ -54,7 +55,7 @@ def eliminar_mascota(mascota_id: int) -> None:
         print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
-def actualizar_mascota(mascota_id, nombre=None, especie=None, raza=None, edad=None, peso=None, propietario_id=None):
+def actualizar_mascota(mascota_id: int, nombre: Optional[str]= None, especie: Optional[str] = None, raza: Optional[str] = None, edad: Optional[int] = None, peso: Optional[float] = None, propietario_id: Optional[int] = None) -> None:
         with conectar() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM mascotas WHERE id = ?", (mascota_id,))
@@ -115,55 +116,3 @@ def contar_mascotas() -> None:
         print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
     except sqlite3.DatabaseError as e:
         print(f"\n Error general de base de datos:", e)
-        
-        
-def listar_mascotas_ordenadas_por_nombre() -> None:
-
-        with conectar() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM mascotas ORDER BY nombre ASC")
-            mascotas = cursor.fetchall()
-            if not mascotas:
-                print("\n No hay mascotas registradas.")
-                return
-            print("\n Lista de Mascotas Ordenadas por Nombre:")
-            print("-" * 80)
-            for mascota in mascotas:
-                print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
-            print("-" * 80)
-        
-def listar_mascotas_ordenadas_por_edad() -> None:
-    try:
-        with conectar() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM mascotas ORDER BY edad ASC")
-            mascotas = cursor.fetchall()
-            if not mascotas:
-                print("\n No hay mascotas registradas.")
-                return
-            print("\n Lista de Mascotas Ordenadas por Edad:")
-            print("-" * 80)
-            for mascota in mascotas:
-                print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
-            print("-" * 80)
-    except sqlite3.IntegrityError as e:
-        print(f"\n Error de integridad (posible duplicado o constraint):", e)
-    except sqlite3.OperationalError as e:
-        print(f"\n Error operacional (consulta mal escrita o BD inaccesible):", e)
-    except sqlite3.DatabaseError as e:
-        print(f"\n Error general de base de datos:", e)
-        
-def listar_mascotas_ordenadas_por_peso() -> None:
-
-        with conectar() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM mascotas ORDER BY peso ASC")
-            mascotas = cursor.fetchall()
-            if not mascotas:
-                print("\n No hay mascotas registradas.")
-                return
-            print("\n Lista de Mascotas Ordenadas por Peso:")
-            print("-" * 80)
-            for mascota in mascotas:
-                print(f"ID: {mascota[0]}, Nombre: {mascota[1]}, Especie: {mascota[2]}, Raza: {mascota[3]}, Edad: {mascota[4]}, Peso: {mascota[5]}, Propietario ID: {mascota[6]}")
-            print("-" * 80)
