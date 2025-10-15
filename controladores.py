@@ -350,15 +350,58 @@ def reporte_resumen_general() -> None:
     try:
         with conectar() as conn:
             c = conn.cursor()
-            c.execute("SELECT COUNT(*) FROM usuarios"); usuarios = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM veterinarios"); vets = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM mascotas"); mascotas = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM reservas"); reservas = c.fetchone()[0]
-            print("\n=== Resumen General ===")
-            print(f"Usuarios: {usuarios}")
-            print(f"Veterinarios: {vets}")
-            print(f"Mascotas: {mascotas}")
-            print(f"Reservas: {reservas}")
+
+            # Conteos generales
+            c.execute("SELECT COUNT(*) FROM usuarios"); total_usuarios = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM veterinarios"); total_veterinarios = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM mascotas"); total_mascotas = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM reservas"); total_reservas = c.fetchone()[0]
+
+            # Mascota más joven y más vieja
+            c.execute("SELECT MIN(edad), MAX(edad) FROM mascotas")
+            edad_min, edad_max = c.fetchone()
+
+            # Promedio de edad de las mascotas
+            c.execute("SELECT ROUND(AVG(edad), 1) FROM mascotas WHERE edad IS NOT NULL")
+            edad_promedio = c.fetchone()[0]
+
+            # Veterinario con más reservas
+            c.execute("""
+                SELECT v.nombre, COUNT(r.idReserva) AS total
+                FROM veterinarios v
+                LEFT JOIN reservas r ON v.idVeterinario = r.idVeterinario
+                GROUP BY v.idVeterinario
+                ORDER BY total DESC
+                LIMIT 1
+            """)
+            top_vet = c.fetchone()
+            vet_mas_reservas = f"{top_vet[0]} ({top_vet[1]} reservas)" if top_vet and top_vet[1] > 0 else "Sin registros"
+
+            # Usuario con más mascotas registradas
+            c.execute("""
+                SELECT u.nombre, COUNT(m.idMascota) AS total
+                FROM usuarios u
+                LEFT JOIN mascotas m ON u.idUsuario = m.idDueno
+                GROUP BY u.idUsuario
+                ORDER BY total DESC
+                LIMIT 1
+            """)
+            top_usuario = c.fetchone()
+            usuario_mas_mascotas = f"{top_usuario[0]} ({top_usuario[1]} mascotas)" if top_usuario and top_usuario[1] > 0 else "Sin registros"
+
+            print("\n=== REPORTE GENERAL DEL SISTEMA ===")
+            print(f"Usuarios registrados:       {total_usuarios}")
+            print(f"Veterinarios registrados:   {total_veterinarios}")
+            print(f"Mascotas registradas:       {total_mascotas}")
+            print(f"Reservas registradas:       {total_reservas}")
+            print("-" * 60)
+            print(f"Veterinario con más reservas: {vet_mas_reservas}")
+            print(f"Usuario con más mascotas:     {usuario_mas_mascotas}")
+            print(f"Edad mínima de mascotas:      {edad_min if edad_min else 'N/A'} años")
+            print(f"Edad máxima de mascotas:      {edad_max if edad_max else 'N/A'} años")
+            print(f"Edad promedio de mascotas:    {edad_promedio if edad_promedio else 'N/A'} años")
+            print("-" * 60)
+
     except sqlite3.DatabaseError as e:
         print("Error de base de datos:", e)
 
@@ -366,17 +409,62 @@ def exportar_resumen_general_txt(ruta: str = "reporte_resumen_general.txt") -> N
     try:
         with conectar() as conn:
             c = conn.cursor()
-            c.execute("SELECT COUNT(*) FROM usuarios"); usuarios = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM veterinarios"); vets = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM mascotas"); mascotas = c.fetchone()[0]
-            c.execute("SELECT COUNT(*) FROM reservas"); reservas = c.fetchone()[0]
-        with open(ruta, "w", encoding="utf-8") as f:
-            f.write("=== Resumen General ===\n")
-            f.write(f"Usuarios: {usuarios}\n")
-            f.write(f"Veterinarios: {vets}\n")
-            f.write(f"Mascotas: {mascotas}\n")
-            f.write(f"Reservas: {reservas}\n")
+
+            # Conteos generales
+            c.execute("SELECT COUNT(*) FROM usuarios"); total_usuarios = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM veterinarios"); total_veterinarios = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM mascotas"); total_mascotas = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM reservas"); total_reservas = c.fetchone()[0]
+
+            # Mascota más joven y más vieja
+            c.execute("SELECT MIN(edad), MAX(edad) FROM mascotas")
+            edad_min, edad_max = c.fetchone()
+
+            # Promedio de edad de las mascotas
+            c.execute("SELECT ROUND(AVG(edad), 1) FROM mascotas WHERE edad IS NOT NULL")
+            edad_promedio = c.fetchone()[0]
+
+            # Veterinario con más reservas
+            c.execute("""
+                SELECT v.nombre, COUNT(r.idReserva) AS total
+                FROM veterinarios v
+                LEFT JOIN reservas r ON v.idVeterinario = r.idVeterinario
+                GROUP BY v.idVeterinario
+                ORDER BY total DESC
+                LIMIT 1
+            """)
+            top_vet = c.fetchone()
+            vet_mas_reservas = f"{top_vet[0]} ({top_vet[1]} reservas)" if top_vet and top_vet[1] > 0 else "Sin registros"
+
+            # Usuario con más mascotas registradas
+            c.execute("""
+                SELECT u.nombre, COUNT(m.idMascota) AS total
+                FROM usuarios u
+                LEFT JOIN mascotas m ON u.idUsuario = m.idDueno
+                GROUP BY u.idUsuario
+                ORDER BY total DESC
+                LIMIT 1
+            """)
+            top_usuario = c.fetchone()
+            usuario_mas_mascotas = f"{top_usuario[0]} ({top_usuario[1]} mascotas)" if top_usuario and top_usuario[1] > 0 else "Sin registros"
+
+        # Crear o sobrescribir el archivo
+        with open(ruta, "w", encoding="utf-8") as archivo:
+            archivo.write("=== REPORTE GENERAL DEL SISTEMA ===\n\n")
+            archivo.write(f"Usuarios registrados:       {total_usuarios}\n")
+            archivo.write(f"Veterinarios registrados:   {total_veterinarios}\n")
+            archivo.write(f"Mascotas registradas:       {total_mascotas}\n")
+            archivo.write(f"Reservas registradas:       {total_reservas}\n")
+            archivo.write("-" * 60 + "\n")
+            archivo.write(f"Veterinario con más reservas: {vet_mas_reservas}\n")
+            archivo.write(f"Usuario con más mascotas:     {usuario_mas_mascotas}\n")
+            archivo.write(f"Edad mínima de mascotas:      {edad_min if edad_min else 'N/A'} años\n")
+            archivo.write(f"Edad máxima de mascotas:      {edad_max if edad_max else 'N/A'} años\n")
+            archivo.write(f"Edad promedio de mascotas:    {edad_promedio if edad_promedio else 'N/A'} años\n")
+            archivo.write("-" * 60 + "\n")
+
         print(f"\nReporte exportado correctamente en: {ruta}")
+
     except sqlite3.DatabaseError as e:
         print("Error de base de datos:", e)
     except OSError as e:

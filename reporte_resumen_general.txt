@@ -1,0 +1,13 @@
+=== REPORTE GENERAL DEL SISTEMA ===
+
+Usuarios registrados:       1
+Veterinarios registrados:   0
+Mascotas registradas:       0
+Reservas registradas:       0
+------------------------------------------------------------
+Veterinario con más reservas: Sin registros
+Usuario con más mascotas:     Sin registros
+Edad mínima de mascotas:      N/A años
+Edad máxima de mascotas:      N/A años
+Edad promedio de mascotas:    N/A años
+------------------------------------------------------------
