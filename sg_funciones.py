@@ -2,7 +2,12 @@ import os, sqlite3, hashlib, hmac, base64
 from sg_veterinaria import *
 from sg_hash import * 
 
-def registrar_login(username: str, email: str, password: str, rol: str) -> None: # Registrar un nuevo usuario
+# -----------------------------------------
+# Función de Registrar Login
+# Registra un nuevo usuario en la tabla usuarios para utilizarse en login
+# Realiza hash de contraseña para aplicar seguridad
+# -----------------------------------------
+def registrar_login(username: str, email: str, password: str, rol: str) -> None:
     try: # incio del bloque try para manejar excepciones
         salt = os.urandom(SALT_LEN) # Generar una sal aleatoria
         hash = hash_password(password, salt) # Hashear la contraseña con la sal
@@ -24,6 +29,11 @@ def registrar_login(username: str, email: str, password: str, rol: str) -> None:
         print(f"\n Error general de base de datos:", e)
         # fin del bloque try-except
 
+# -----------------------------------------
+# Función de Verificar Login
+# Compara un usuario en la tabla usuarios con lo ingresado para iniciar sesion
+# Realiza hash de contraseña para comparar con lo guardado en Registrar Login
+# -----------------------------------------
 def verificar_login(username: str, password: str) -> bool: # Verificar las credenciales de un usuario
     try: # inicio del bloque try para manejar excepciones   
         with conectar() as conn:

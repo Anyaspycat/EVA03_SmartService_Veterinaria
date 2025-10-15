@@ -574,7 +574,6 @@ class Veterinario:
         def __str__(self):
             return f"ID Veterinario: {self.idVeterinario}, Nombre: {self.nombre}, Especialidad: {self.especialidad}"
 
-
 # -----------------------------------------
 # Clase: Mascota
 # Representa a una mascota que será atendida.

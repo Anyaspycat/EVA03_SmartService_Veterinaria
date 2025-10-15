@@ -14,6 +14,10 @@ SCRYPT_P = 1
 KEY_LEN = 32  
 SALT_LEN = 16 
 
+# -----------------------------------------
+# Función de Hash Password
+# Logica que encripta caracteres mediante hashlib.scrypt
+# -----------------------------------------
 def hash_password(password: str, salt: bytes) -> bytes:
     return hashlib.scrypt(
         password = password.encode("utf-8"),
