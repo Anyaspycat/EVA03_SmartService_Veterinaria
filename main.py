@@ -73,7 +73,7 @@ def menu_veterinarios():
                 print("ID inválido."); continue
             eliminar_veterinario(id_veterinario)
         elif opcion == '5':
-            texto_nombre = input("Nombre contiene: ").strip()
+            texto_nombre = input("Nombre contiene (Vacío para mostrar todos): ").strip()
             buscar_veterinarios_por_nombre(texto_nombre)
         elif opcion == '6':
             especialidad = input("Especialidad exacta: ").strip()
@@ -97,7 +97,7 @@ def menu_mascotas():
         print("2.- Listar")
         print("3.- Actualizar")
         print("4.- Eliminar")
-        print("5.- Buscar por propietario")
+        print("5.- Buscar por responsable")
         print("6.- Buscar por especie")
         print("7.- Contar")
         print("8.- Volver\n")
@@ -108,10 +108,10 @@ def menu_mascotas():
             nombre = input("Nombre: ").strip()
             especie = input("Especie: ").strip()
             raza = input("Raza: ").strip()
-            edad = int(input("Edad: ").strip())
-            peso = float(input("Peso: ").strip())
-            propietario_id = int(input("ID propietario: ").strip())
-            registrar_nueva_mascota(nombre, especie, raza, edad, peso, propietario_id)
+            edad = int(input("Edad (Ingresar Entero): ").strip())
+            peso = float(input("Peso (En KG / Ingresar Flotante): ").strip())
+            responsable = input("Responsable (Tutor): ").strip()
+            registrar_nueva_mascota(nombre, especie, raza, edad, peso, responsable)
         elif opcion == '2':
             listar_mascotas()
         elif opcion == '3':
@@ -126,7 +126,7 @@ def menu_mascotas():
             raza = input("Nueva raza (Enter mantiene): ").strip()
             edad_txt = input("Nueva edad (Enter mantiene): ").strip()
             peso_txt = input("Nuevo peso (Enter mantiene): ").strip()
-            dueno_txt = input("Nuevo ID propietario (Enter mantiene): ").strip()
+            responsable_txt = input("Nuevo Responsable (Enter mantiene): ").strip()
             actualizar_mascota(
                 id_mascota,
                 nombre or None,
@@ -134,7 +134,7 @@ def menu_mascotas():
                 raza or None,
                 int(edad_txt) if edad_txt else None,
                 float(peso_txt) if peso_txt else None,
-                int(dueno_txt) if dueno_txt else None
+                int(responsable_txt) if responsable_txt else None
             )
         elif opcion == '4':
             try:
@@ -143,11 +143,8 @@ def menu_mascotas():
                 print("ID inválido."); continue
             eliminar_mascota(id_mascota)
         elif opcion == '5':
-            try:
-                id_propietario = int(input("ID propietario: "))
-            except ValueError:
-                print("ID inválido."); continue
-            buscar_mascotas_por_propietario(id_propietario)
+            responsable = input("Responsable: ")
+            buscar_mascotas_por_responsable(responsable)
         elif opcion == '6':
             especie = input("Especie: ").strip()
             buscar_mascotas_por_especie(especie)
@@ -177,7 +174,6 @@ def menu_reservas():
         if opcion_menu == '1':
             # Validación de IDs numéricos para relaciones foráneas.
             try:
-                id_usuario = int(input("ID del usuario: ").strip())
                 id_mascota = int(input("ID de la mascota: ").strip())
                 id_veterinario = int(input("ID del veterinario: ").strip())
             except ValueError:
@@ -190,7 +186,6 @@ def menu_reservas():
             estado_mascota = input("Estado de la mascota: ").strip()
 
             crear_reserva(
-                id_usuario,
                 id_mascota,
                 id_veterinario,
                 fecha_reserva,
@@ -210,21 +205,17 @@ def menu_reservas():
                 print("El ID de la reserva debe ser numérico."); continue
 
             # Entradas opcionales: si el usuario presiona Enter se envía None para conservar.
-            texto_id_usuario = input("Nuevo ID de usuario (Enter mantiene): ").strip()
             texto_id_mascota = input("Nuevo ID de mascota (Enter mantiene): ").strip()
             texto_id_veterinario = input("Nuevo ID de veterinario (Enter mantiene): ").strip()
             nueva_fecha = input("Nueva fecha (YYYY-MM-DD, Enter mantiene): ").strip()
             nueva_hora = input("Nueva hora (HH:MM:SS, Enter mantiene): ").strip()
             nuevo_motivo = input("Nuevo motivo (Enter mantiene): ").strip()
             nuevo_estado = input("Nuevo estado (Enter mantiene): ").strip()
-
-            nuevo_id_usuario = int(texto_id_usuario) if texto_id_usuario else None
             nuevo_id_mascota = int(texto_id_mascota) if texto_id_mascota else None
             nuevo_id_veterinario = int(texto_id_veterinario) if texto_id_veterinario else None
 
             modificar_reserva(
                 id_reserva,
-                nuevo_id_usuario,
                 nuevo_id_mascota,
                 nuevo_id_veterinario,
                 nueva_fecha or None,

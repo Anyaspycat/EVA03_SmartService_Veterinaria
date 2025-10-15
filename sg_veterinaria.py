@@ -4,7 +4,9 @@ import sqlite3, os, hashlib, base64, hmac
 DB_NAME = "sg_veterinaria.db" # Nombre de la base de datos SQLite
 
 def conectar(): # Función para conectar a la base de datos
-    return sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(DB_NAME)
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
 
 def crear_tabla_usuarios(): # Función para crear la tabla de usuarios
     with conectar() as conn:
@@ -48,7 +50,8 @@ def crear_tabla_mascotas(): # Función para crear la tabla de mascotas
                 especie TEXT,
                 raza TEXT,
                 edad INTEGER,
-                idDueno INTEGER
+                peso REAL,
+                responsable TEXT
             )
             """
         )
@@ -61,15 +64,14 @@ def crear_tabla_reservas(): # Función para crear la tabla de reservas
             """
             CREATE TABLE IF NOT EXISTS reservas (
                 idReserva INTEGER PRIMARY KEY AUTOINCREMENT,
-                idUsuario INTEGER,
                 idMascota INTEGER,
                 idVeterinario INTEGER,
                 fecha DATE,
                 hora TIME,
                 motivo TEXT,
                 estadoMascota TEXT,
-                FOREIGN KEY (idMascota) REFERENCES mascotas(idMascota),
-                FOREIGN KEY (idVeterinario) REFERENCES veterinarios(idVeterinario)
+                FOREIGN KEY (idMascota) REFERENCES mascotas (idMascota),
+                FOREIGN KEY (idVeterinario) REFERENCES veterinarios (idVeterinario)
             )
             """
         )

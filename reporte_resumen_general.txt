@@ -1,12 +1,12 @@
 === REPORTE GENERAL DEL SISTEMA ===
 
 Usuarios registrados:       1
-Veterinarios registrados:   0
-Mascotas registradas:       0
-Reservas registradas:       0
+Veterinarios registrados:   1
+Mascotas registradas:       1
+Reservas registradas:       1
 ------------------------------------------------------------
-Veterinario con más reservas: Sin registros
-Edad mínima de mascotas:      N/A años
-Edad máxima de mascotas:      N/A años
-Edad promedio de mascotas:    N/A años
+Veterinario con más reservas: Jose (1 reservas)
+Edad mínima de mascotas:      4 años
+Edad máxima de mascotas:      4 años
+Edad promedio de mascotas:    4.0 años
 ------------------------------------------------------------
