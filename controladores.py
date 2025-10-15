@@ -494,3 +494,24 @@ class Reserva:
         self.estadoMascota = estadoMascota
         def __str__(self):
             return f"ID Reserva: {self.idReserva}, Fecha: {self.fecha}, Hora: {self.hora}, Motivo: {self.motivo}, Estado de la Mascota: {self.estadoMascota}"
+
+class Veteriario: 
+    def __init__(self, idVeterinario, nombre, especialidad):
+        self.idVeterinario = idVeterinario
+        self.nombre = nombre
+        self.especialidad = especialidad
+        def __str__(self):
+            return f"ID Veterinario: {self.idVeterinario}, Nombre: {self.nombre}, Especialidad: {self.especialidad}"
+
+class Mascota:
+    def __init__(self, idMascota, idUsuario, nombre, especie, raza, edad):
+        self.idMascota = idMascota
+        self.idUsuario = idUsuario
+        self.nombre = nombre
+        self.especie = especie
+        self.raza = raza
+        self.edad = edad
+        def __str__(self):
+            return f"ID Mascota: {self.idMascota}, Nombre: {self.nombre}, Especie: {self.especie}, Raza: {self.raza}, Edad: {self.edad}"
+
+
