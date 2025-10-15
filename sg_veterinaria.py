@@ -1,11 +1,12 @@
 import sqlite3, os, hashlib, base64, hmac
+# Importaciones para la gestión de la base de datos y seguridad
 
-DB_NAME = "sg_veterinaria.db"
+DB_NAME = "sg_veterinaria.db" # Nombre de la base de datos SQLite
 
-def conectar():
+def conectar(): # Función para conectar a la base de datos
     return sqlite3.connect(DB_NAME)
 
-def crear_tabla_usuarios():
+def crear_tabla_usuarios(): # Función para crear la tabla de usuarios
     with conectar() as conn:
         c = conn.cursor()
         c.execute(
@@ -22,7 +23,7 @@ def crear_tabla_usuarios():
         )
         conn.commit()
 
-def crear_tablas_veterinaria():
+def crear_tablas_veterinaria(): # Función para crear la tabla de veterinarios
     with conectar() as conn:
         c = conn.cursor()
         c.execute(
@@ -36,7 +37,7 @@ def crear_tablas_veterinaria():
         )
         conn.commit()
 
-def crear_tabla_mascotas():
+def crear_tabla_mascotas(): # Función para crear la tabla de mascotas
     with conectar() as conn:
         c = conn.cursor()
         c.execute(
@@ -53,7 +54,7 @@ def crear_tabla_mascotas():
         )
         conn.commit() 
         
-def crear_tabla_reservas():
+def crear_tabla_reservas(): # Función para crear la tabla de reservas
     with conectar() as conn:
         c = conn.cursor()
         c.execute(
