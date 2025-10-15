@@ -473,5 +473,12 @@ def exportar_resumen_general_txt(ruta: str = "reporte_resumen_general.txt") -> N
 
 
 class Usuario: 
-
+def __init__(self, idUsuario, nombre, email, password_hash, rol):
+        self.idUsuario = idUsuario
+        self.nombre = nombre
+        self.email = email
+        self.password_hash = password_hash
+        self.rol = rol
+        def __str__(self):
+            return f"ID Usuario: {self.idUsuario}, Nombre: {self.nombre}, Email: {self.email}, Rol: {self.rol}" 
 
