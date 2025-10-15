@@ -469,3 +469,9 @@ def exportar_resumen_general_txt(ruta: str = "reporte_resumen_general.txt") -> N
         print("Error de base de datos:", e)
     except OSError as e:
         print("Error al escribir archivo:", e)
+
+
+
+class Usuario: 
+
+
