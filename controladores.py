@@ -345,3 +345,39 @@ def contar_veterinarios() -> None:
         print("\n Error operacional:", e)
     except sqlite3.DatabaseError as e:
         print("\n Error general de base de datos:", e)
+
+def reporte_resumen_general() -> None:
+    try:
+        with conectar() as conn:
+            c = conn.cursor()
+            c.execute("SELECT COUNT(*) FROM usuarios"); usuarios = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM veterinarios"); vets = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM mascotas"); mascotas = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM reservas"); reservas = c.fetchone()[0]
+            print("\n=== Resumen General ===")
+            print(f"Usuarios: {usuarios}")
+            print(f"Veterinarios: {vets}")
+            print(f"Mascotas: {mascotas}")
+            print(f"Reservas: {reservas}")
+    except sqlite3.DatabaseError as e:
+        print("Error de base de datos:", e)
+
+def exportar_resumen_general_txt(ruta: str = "reporte_resumen_general.txt") -> None:
+    try:
+        with conectar() as conn:
+            c = conn.cursor()
+            c.execute("SELECT COUNT(*) FROM usuarios"); usuarios = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM veterinarios"); vets = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM mascotas"); mascotas = c.fetchone()[0]
+            c.execute("SELECT COUNT(*) FROM reservas"); reservas = c.fetchone()[0]
+        with open(ruta, "w", encoding="utf-8") as f:
+            f.write("=== Resumen General ===\n")
+            f.write(f"Usuarios: {usuarios}\n")
+            f.write(f"Veterinarios: {vets}\n")
+            f.write(f"Mascotas: {mascotas}\n")
+            f.write(f"Reservas: {reservas}\n")
+        print(f"\nReporte exportado correctamente en: {ruta}")
+    except sqlite3.DatabaseError as e:
+        print("Error de base de datos:", e)
+    except OSError as e:
+        print("Error al escribir archivo:", e)
