@@ -482,3 +482,15 @@ def __init__(self, idUsuario, nombre, email, password_hash, rol):
         def __str__(self):
             return f"ID Usuario: {self.idUsuario}, Nombre: {self.nombre}, Email: {self.email}, Rol: {self.rol}" 
 
+class Reserva:
+    def __init__(self, idReserva, idUsuario, idMascota, idVeterinario, fecha, hora, motivo, estadoMascota):
+        self.idReserva = idReserva
+        self.idUsuario = idUsuario
+        self.idMascota = idMascota
+        self.idVeterinario = idVeterinario
+        self.fecha = fecha
+        self.hora = hora
+        self.motivo = motivo
+        self.estadoMascota = estadoMascota
+        def __str__(self):
+            return f"ID Reserva: {self.idReserva}, Fecha: {self.fecha}, Hora: {self.hora}, Motivo: {self.motivo}, Estado de la Mascota: {self.estadoMascota}"
